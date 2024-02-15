@@ -67,16 +67,16 @@ architecture test_bench of halfAdder_tb is
   end component;
 
   
-  signal i_sw1, i_sw0 : std_logic := '0'; 
-  signal o_led1, o_led0 : std_logic := '0';
+  signal w_sw1, w_sw0 : std_logic := '0'; 
+  signal w_led1, w_led0 : std_logic := '0';
     
 begin
 	-- PORT MAPS ----------------------------------------
 	halfAdder_inst : halfAdder port map (
-		i_A     => i_sw1,
-		i_B     => i_sw0,
-		o_S     => o_led0,
-		o_Cout  => o_led1
+		i_A     => w_sw1,
+		i_B     => w_sw0,
+		o_S     => w_led0,
+		o_Cout  => w_led1
 	);
 	-----------------------------------------------------
 	
@@ -85,11 +85,18 @@ begin
 	-- Testing each combination of i_A and i_B (4 total)
 	test_process : process 
 	begin
-	
-		i_sw1 <= '0'; i_sw0 <= '0'; wait for 10 ns;
-		i_sw1 <= '0'; i_sw0 <= '1'; wait for 10 ns;
-		i_sw1 <= '1'; i_sw0 <= '0'; wait for 10 ns;
-		i_sw1 <= '1'; i_sw0 <= '1';	
+        w_sw1 <= '0'; w_sw0 <= '0'; wait for 10 ns;
+        assert w_led0 = '0' report "bad sum" severity error;
+        assert w_led1 = '0' report "bad carry" severity error;
+        w_sw1 <= '0'; w_sw0 <= '1'; wait for 10 ns;
+        assert w_led0 = '1' report "bad sum" severity error;
+        assert w_led1 = '0' report "bad carry" severity error;
+        w_sw1 <= '1'; w_sw0 <= '0'; wait for 10 ns;
+        assert w_led0 = '1' report "bad sum" severity error;
+        assert w_led1 = '0' report "bad carry" severity error;
+        w_sw1 <= '1'; w_sw0 <= '1'; wait for 10 ns;
+        assert w_led0 = '0' report "bad sum" severity error;
+        assert w_led1 = '1' report "bad carry" severity error;
 		wait; -- wait forever
 		
 	end process;	
